@@ -1,6 +1,6 @@
 # compiled output
-**/dist/
-**/node_modules/
+/dist
+/node_modules
 
 # Logs
 logs
@@ -33,3 +33,13 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Json files
+documentAssembly.json
+infrastructure.json
+
+# Environment files
+.env
+
+# Local loan json schema
+/loans-json-schema
