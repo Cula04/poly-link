@@ -12,21 +12,29 @@ export class VendingMachineProductDbEntity implements VendingMachineProduct {
   type: VendingMachineProductCategory;
 
   @Column()
-  date: string;
+  threshold: number;
+
+  @Column({ type: 'date' })
+  date: Date;
 
   @Column()
   currentAmount: number;
 
+  @Column({ nullable: true })
+  currentAIAmount?: number;
+
   @Column()
-  lastChange: number;
+  change: number;
 
   toDomainEntity?() {
     return VendingMachineProductEntity.create(
       {
         type: this.type,
+        threshold: this.threshold,
         date: this.date,
         currentAmount: this.currentAmount,
-        lastChange: this.lastChange,
+        currentAIAmount: this.currentAIAmount,
+        change: this.change,
       },
       this._id,
     );
@@ -38,9 +46,11 @@ export class VendingMachineProductDbEntity implements VendingMachineProduct {
     return {
       _id: entity.id,
       type: entity.props.type,
+      threshold: entity.props.threshold,
       date: entity.props.date,
       currentAmount: entity.props.currentAmount,
-      lastChange: entity.props.lastChange,
+      currentAIAmount: entity.props.currentAIAmount,
+      change: entity.props.change,
     };
   }
 }
@@ -50,7 +60,9 @@ export const VendingMachineProductDBColumns: {
 } = {
   _id: '_id',
   type: 'type',
+  threshold: 'threshold',
   date: 'date',
   currentAmount: 'currentAmount',
-  lastChange: 'lastChange',
+  currentAIAmount: 'currentAIAmount',
+  change: 'change',
 };

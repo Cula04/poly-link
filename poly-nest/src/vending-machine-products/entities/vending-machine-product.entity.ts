@@ -16,4 +16,28 @@ export class VendingMachineProductEntity extends BaseEntity<VendingMachineProduc
   get id() {
     return this._id;
   }
+
+  get type() {
+    return this.props.type;
+  }
+
+  get threshold() {
+    return this.props.threshold;
+  }
+
+  get date() {
+    return this.props.date;
+  }
+
+  get currentAmount() {
+    return this.props.currentAmount;
+  }
+
+  get change() {
+    return this.props.change;
+  }
+
+  get currentAIAmount() {
+    return this.props.currentAIAmount;
+  }
 }

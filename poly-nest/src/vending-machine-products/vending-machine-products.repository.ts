@@ -12,23 +12,53 @@ export class VendingMachineProductsRepository {
     private readonly vendingMachineProductTableRepo: Repository<VendingMachineProductDbEntity>,
   ) {}
 
+  async cleanDatabaseForType(
+    productType: VendingMachineProductCategory,
+  ): Promise<void> {
+    await this.vendingMachineProductTableRepo.delete({
+      type: productType,
+    });
+  }
+
   async getVendingMachineProducts(
     productType: VendingMachineProductCategory,
+    threshold: number,
   ): Promise<VendingMachineProductEntity[]> {
+    const whereQuery = {};
+    if (productType) whereQuery['type'] = productType;
+    if (threshold) whereQuery['threshold'] = threshold;
     const dbEntities = await this.vendingMachineProductTableRepo.find({
-      where: { type: productType },
+      where: whereQuery,
     });
-    console.log('dbEntities', dbEntities);
     return dbEntities.map((dbEntity) => dbEntity.toDomainEntity());
+  }
+
+  async getVendingMachineProduct(
+    productType: VendingMachineProductCategory,
+    threshold: number,
+    date: Date,
+  ): Promise<VendingMachineProductEntity | null> {
+    const dbEntity = await this.vendingMachineProductTableRepo.findOne({
+      where: { type: productType, threshold, date },
+    });
+    if (dbEntity) return dbEntity.toDomainEntity();
   }
 
   async addVendingMachineProduct(
     product: VendingMachineProductEntity,
   ): Promise<VendingMachineProductEntity> {
     const dbEntity = VendingMachineProductDbEntity.fromDomainEntity(product);
-    console.log('dbEntity', dbEntity);
-    const res = await this.vendingMachineProductTableRepo.save(dbEntity);
-    console.log('res', res);
+    await this.vendingMachineProductTableRepo.save(dbEntity);
     return product;
+  }
+
+  async addVendingMachineProducts(
+    products: VendingMachineProductEntity[],
+  ): Promise<VendingMachineProductEntity[]> {
+    const dbEntities = products.map((product) =>
+      VendingMachineProductDbEntity.fromDomainEntity(product),
+    );
+    await this.vendingMachineProductTableRepo.save(dbEntities);
+    return products;
   }
 }
