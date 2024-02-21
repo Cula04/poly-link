@@ -1,11 +1,7 @@
 ## Description
 
-Poly link repo - building apps for different purposes.
-
-```
-
+Poly link repo - building apps for different purposes using NestJS for backend part, NextJS for frontend and python ML tools for predictions
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
-```
+[MIT licensed](LICENSE)
