@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { registerEnumType } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { VendingMachineProductDbEntity } from './entities/vending-machine-product.db-entity';
@@ -12,7 +13,10 @@ registerEnumType(VendingMachineProductCategory, {
 });
 
 @Module({
-  imports: [TypeOrmModule.forFeature([VendingMachineProductDbEntity])],
+  imports: [
+    ConfigModule,
+    TypeOrmModule.forFeature([VendingMachineProductDbEntity]),
+  ],
   providers: [
     VendingMachineProductsResolver,
     VendingMachineProductsService,

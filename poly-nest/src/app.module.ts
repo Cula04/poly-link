@@ -11,7 +11,7 @@ import { VendingMachineProductsModule } from './vending-machine-products/vending
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: `mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_CLUSTER_NAME}/${process.env.MONDO_DB_NAME}?retryWrites=true&w=majority`,
+      url: `${process.env.MONGO_DB_URL}`,
       entities: [VendingMachineProductDbEntity],
       synchronize: true,
     }),

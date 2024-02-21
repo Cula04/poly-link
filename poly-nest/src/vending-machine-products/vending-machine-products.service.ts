@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   addDays,
   addHours,
@@ -9,14 +10,20 @@ import { VendingMachineProduct } from './types';
 import { VendingMachineProductCategory } from './types/vending-machine-product-category.type';
 import { VendingMachineProductsRepository } from './vending-machine-products.repository';
 
-const MAX_AMOUNT = 200;
-const THRESHOLD_VALUES = [7, 15];
 @Injectable({})
 export class VendingMachineProductsService {
   logger = new Logger('VendingMachineProductsService');
   constructor(
     private readonly vendingMachineProductsRepository: VendingMachineProductsRepository,
+    private readonly configService: ConfigService,
   ) {}
+
+  MAX_AMOUNT: number =
+    parseInt(this.configService.get<string>('PRODUCT_MAX_VALUE')) ?? 200;
+  THRESHOLD_VALUES = this.configService
+    .get<string>('THRESHOLD_VALUES')
+    ?.split(',')
+    .map(Number) ?? [7, 15, 21, 30];
 
   async getVendingMachineProducts(
     productType: VendingMachineProductCategory,
@@ -45,13 +52,14 @@ export class VendingMachineProductsService {
     endDate: Date,
     productTypes: VendingMachineProductCategory[],
   ): Promise<void> {
-    const indexShift = THRESHOLD_VALUES.length;
+    const indexShift = this.THRESHOLD_VALUES.length;
+    console.log('MAX_AMOUNT', this.MAX_AMOUNT);
     for (const productType of productTypes) {
       try {
         // Initialize current amount to MAX_AMOUNT for the first day
         const products: VendingMachineProductEntity[] = [];
         let currentProductIndex = 0;
-        let currentAmount: number = MAX_AMOUNT;
+        let currentAmount: number = this.MAX_AMOUNT;
         let changedOnWeekend: boolean = false;
         let changedOnFirstWeek: boolean = false;
 
@@ -70,18 +78,18 @@ export class VendingMachineProductsService {
           changedOnWeekend = result.changedOnWeekend;
           changedOnFirstWeek = result.changedOnFirstWeek;
 
-          for (const threshold of THRESHOLD_VALUES) {
+          for (const threshold of this.THRESHOLD_VALUES) {
             // Check if the previous day's data exists
             const previousAmount =
               currentProductIndex >= indexShift
                 ? products[currentProductIndex - indexShift].currentAmount
-                : MAX_AMOUNT;
+                : this.MAX_AMOUNT;
 
             // Calculate current amount after change
             currentAmount =
               previousAmount > threshold
                 ? previousAmount - result.change
-                : MAX_AMOUNT - result.change;
+                : this.MAX_AMOUNT - result.change;
 
             // Create data object
             const data: VendingMachineProductEntity =
