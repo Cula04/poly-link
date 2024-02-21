@@ -32,7 +32,6 @@ const findAllUniqueThresholds = (data?: VendingMachineProduct[]): number[] => {
 };
 
 const combineSeriesData = (
-  productType: VendingMachineProductCategory,
   thresholds: number[],
   data?: VendingMachineProduct[],
 ): Series => {
@@ -85,7 +84,7 @@ export default function DataComparisonPage() {
 
   useEffect(() => {
     const thresholds = findAllUniqueThresholds(data);
-    setSeries(combineSeriesData(productType, thresholds, data));
+    setSeries(combineSeriesData(thresholds, data));
   }, [productType, data]);
 
   return (

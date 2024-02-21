@@ -44,7 +44,10 @@ const combineSeriesData = (
     const products = data.filter((product) => product.type === productType);
     const productTypeData: { x: string | Date; y: number }[] = [];
     products.forEach((product) => {
-      productTypeData.push({ x: product.date, y: product.currentAmount });
+      productTypeData.push({
+        x: product.date,
+        y: product.currentAIAmount ?? product.currentAmount,
+      });
     });
     series.push({
       name: productType,

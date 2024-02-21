@@ -7,7 +7,9 @@ interface Props {
 }
 
 export const ThresholdDropdown: React.FC<Props> = ({ onSelectThreshold }) => {
-  const thresholds = [7, 15, 21, 30];
+  const thresholds = process.env.NEXT_PUBLIC_THRESHOLD_VALUES?.split(',').map(
+    Number,
+  ) || [7, 15, 21, 30];
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedThreshold = parseInt(event.target.value, 10); // Convert value to number

@@ -5,8 +5,12 @@ import { useState } from 'react';
 import { LineTimeSeriesChart } from './components/charts/line-timeseries';
 import { ProductTypesDropdown } from './components/dropdown/product-type-dropdown';
 import { useProductChangesQuery } from './components/hooks/get-product-changes-hook';
+import { prefillDatabaseMutation } from './components/mutations/prefill-db-mutation';
 
 export default function Home() {
+  const [isPrefillLoading, setIsPrefillLoading] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<string>('');
+
   const [productCategory, setProductCategory] =
     useState<VendingMachineProductCategory>(
       VendingMachineProductCategory.TYPE_A,
@@ -24,7 +28,21 @@ export default function Home() {
     { name: 'Comparison', href: '/data-comparison' },
   ];
 
-  const productChanges = useProductChangesQuery(productCategory);
+  const { productChanges, refetch: refetchProductChanges } =
+    useProductChangesQuery(productCategory);
+
+  const handleMutationButtonClick = async () => {
+    try {
+      setIsPrefillLoading(true);
+      await prefillDatabaseMutation();
+      refetchProductChanges({ throwOnError: true, cancelRefetch: false });
+      setErrorMessages('');
+    } catch (error) {
+      setErrorMessages('Failed to prefill database');
+    } finally {
+      setIsPrefillLoading(false);
+    }
+  };
 
   return (
     <main className="mx-auto max-w-7xl pt-4">
@@ -73,6 +91,27 @@ export default function Home() {
           </Link>
         ))}
       </div>
+
+      <h6 className="justify-center pt-10 text-center text-xl">
+        Reinitialize test data:
+      </h6>
+      <div className="flex items-center justify-center pt-4">
+        <button
+          onClick={handleMutationButtonClick}
+          disabled={isPrefillLoading}
+          className={`focus:shadow-outline rounded px-12 py-2 font-bold hover:bg-green-600 focus:outline-none ${
+            isPrefillLoading
+              ? 'cursor-not-allowed bg-gray-400 text-gray-700'
+              : 'bg-green-700 text-white'
+          }`}
+        >
+          {isPrefillLoading ? 'Initializing...' : 'Trigger Initialize'}
+        </button>
+      </div>
+
+      {errorMessages && (
+        <div className="pt-4 text-center text-red-500">{errorMessages}</div>
+      )}
     </main>
   );
 }

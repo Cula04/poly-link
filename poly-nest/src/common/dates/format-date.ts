@@ -10,3 +10,9 @@ export const addDays = (date: Date, numberOfDays: number): Date => {
   newDate.setDate(newDate.getDate() + numberOfDays);
   return newDate;
 };
+
+export const addHours = (date: Date, numberOfHours: number): Date => {
+  const newDate = new Date(date);
+  newDate.setHours(newDate.getHours() + numberOfHours);
+  return newDate;
+};

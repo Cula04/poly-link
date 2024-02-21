@@ -55,6 +55,8 @@ export default function ComparisonDataPage({
           series={series}
           title="Comparison"
           yLabel="label YYY"
+          dashArray={[0, 3, 0, 3]}
+          colors={['#006400', '#00B200', '#FF0000', '#FF6666']}
         />
       </div>
     </div>

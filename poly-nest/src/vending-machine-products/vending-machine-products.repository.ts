@@ -48,6 +48,7 @@ export class VendingMachineProductsRepository {
     product: VendingMachineProductEntity,
   ): Promise<VendingMachineProductEntity> {
     const dbEntity = VendingMachineProductDbEntity.fromDomainEntity(product);
+
     await this.vendingMachineProductTableRepo.save(dbEntity);
     return product;
   }

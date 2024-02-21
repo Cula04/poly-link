@@ -10,12 +10,16 @@ interface Props {
   }[];
   title: string;
   yLabel: string;
+  dashArray?: number[];
+  colors?: string[];
 }
 
 export const LineTimeSeriesChart: React.FC<Props> = ({
   series,
   title,
   yLabel,
+  dashArray = [0, 2, 4, 6, 8],
+  colors = ['#006400', '#00B200', '#7FFF00', '#00FF7F'],
 }) => {
   const options: ApexCharts.ApexOptions = {
     chart: {
@@ -67,9 +71,9 @@ export const LineTimeSeriesChart: React.FC<Props> = ({
     },
     stroke: {
       width: 2, // Adjust this value to change the line thickness
-      dashArray: [0, 2, 4, 6, 8],
+      dashArray,
     },
-    colors: ['#006400', '#00B200', '#7FFF00', '#00FF7F'],
+    colors,
   };
 
   if (!series) {

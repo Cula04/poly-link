@@ -1,6 +1,6 @@
 'use client';
 import { VendingMachineProduct, VendingMachineProductCategory } from '@/types';
-import { useQuery } from '@tanstack/react-query';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
 
 import request, { gql } from 'graphql-request';
 
@@ -8,7 +8,13 @@ type ProductChanges = Pick<VendingMachineProduct, 'date' | 'change'>;
 
 export const useProductChangesQuery = (
   productCategory: VendingMachineProductCategory,
-): ProductChanges[] | undefined => {
+): {
+  productChanges: ProductChanges[] | undefined;
+  refetch: (options: {
+    throwOnError: boolean;
+    cancelRefetch: boolean;
+  }) => Promise<UseQueryResult>;
+} => {
   const url = process.env.NEXT_PUBLIC_GRAPHQL_API_URL;
   if (!url) throw new Error('GRAPHQL_API_URL is not defined');
 
@@ -32,7 +38,7 @@ export const useProductChangesQuery = (
     },
   };
 
-  const { data, error } = useQuery<{
+  const { data, error, refetch } = useQuery<{
     vendingMachineProducts: ProductChanges[];
   }>({
     queryKey: ['gatProductChanges', variables],
@@ -43,5 +49,5 @@ export const useProductChangesQuery = (
     throw new Error(`Error while fetching data from ${url} - ${error}`);
   }
 
-  return data?.vendingMachineProducts;
+  return { productChanges: data?.vendingMachineProducts, refetch };
 };

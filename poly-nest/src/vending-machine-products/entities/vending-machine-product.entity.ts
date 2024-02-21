@@ -10,7 +10,9 @@ export class VendingMachineProductEntity extends BaseEntity<VendingMachineProduc
     props: VendingMachineProduct,
     id?: string,
   ): VendingMachineProductEntity {
-    return new VendingMachineProductEntity(props, id);
+    const entity = new VendingMachineProductEntity(props, id);
+    entity._props.date = entity.#alwaysSetDateToMidnight(props.date);
+    return entity;
   }
 
   get id() {
@@ -40,4 +42,9 @@ export class VendingMachineProductEntity extends BaseEntity<VendingMachineProduc
   get currentAIAmount() {
     return this.props.currentAIAmount;
   }
+
+  #alwaysSetDateToMidnight = (date: Date): Date => {
+    date.setUTCHours(12, 0, 0, 0);
+    return date;
+  };
 }
